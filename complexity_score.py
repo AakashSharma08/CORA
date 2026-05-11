@@ -2,7 +2,7 @@ import math
 import re
 from typing import Tuple, Dict
 
-from cognitive import CognitiveProfile, TaskType
+from cognitive_module import CognitiveProfile, TaskType
 
 # ── Dimension weights ─────────────────────────────────────────────────────────
 # Increased reasoning weight and reduced creativity dominance so that

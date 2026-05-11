@@ -25,8 +25,10 @@ import logging
 from typing import Optional, Tuple
 
 from . import gemma_3n_e4b
-from . import mistral_nemotron
+from . import glm_4_7
+from . import glm_5_1
 from . import llama_3_3_super
+from . import kimi_k2
 from .base import close_clients
 
 logger = logging.getLogger("cora.llm")
@@ -34,17 +36,19 @@ logger = logging.getLogger("cora.llm")
 # ── Model Registry (Optimized for Stability) ────────────────────────────────
 MODEL_REGISTRY = [
     gemma_3n_e4b,       # Tier 0
-    mistral_nemotron,   # Tier 1 & 2
-    llama_3_3_super,    # Tier 3 & 4
+    glm_4_7,            # Tier 1
+    glm_5_1,            # Tier 2
+    llama_3_3_super,    # Tier 3
+    kimi_k2,            # Tier 4
 ]
 
 # ── Tier → Model Mapping ────────────────────────────────────────────────────
 TIER_MODEL_MAP = {
     "Tier 0": gemma_3n_e4b,
-    "Tier 1": mistral_nemotron,
-    "Tier 2": mistral_nemotron,
+    "Tier 1": glm_4_7,
+    "Tier 2": glm_5_1,
     "Tier 3": llama_3_3_super,
-    "Tier 4": llama_3_3_super,
+    "Tier 4": kimi_k2,
 }
 
 # ── Fallback chain (if the assigned tier's model fails) ──────────────────────
