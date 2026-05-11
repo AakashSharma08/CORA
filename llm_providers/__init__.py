@@ -26,33 +26,29 @@ from typing import Optional, Tuple
 
 from . import gemma_3n_e4b
 from . import mistral_nemotron
-from . import magistral_small
-from . import mistral_medium_3
-from . import mistral_large_3
+from . import llama_3_3_super
 from .base import close_clients
 
 logger = logging.getLogger("cora.llm")
 
-# ── Model Registry (ordered by tier, lightest → heaviest) ────────────────────
+# ── Model Registry (Optimized for Stability) ────────────────────────────────
 MODEL_REGISTRY = [
     gemma_3n_e4b,       # Tier 0
-    mistral_nemotron,   # Tier 1
-    magistral_small,    # Tier 2
-    mistral_medium_3,   # Tier 3
-    mistral_large_3,    # Tier 4
+    mistral_nemotron,   # Tier 1 & 2
+    llama_3_3_super,    # Tier 3 & 4
 ]
 
 # ── Tier → Model Mapping ────────────────────────────────────────────────────
 TIER_MODEL_MAP = {
     "Tier 0": gemma_3n_e4b,
     "Tier 1": mistral_nemotron,
-    "Tier 2": magistral_small,
-    "Tier 3": mistral_medium_3,
-    "Tier 4": mistral_large_3,
+    "Tier 2": mistral_nemotron,
+    "Tier 3": llama_3_3_super,
+    "Tier 4": llama_3_3_super,
 }
 
 # ── Fallback chain (if the assigned tier's model fails) ──────────────────────
-TIER_4_FALLBACKS = [mistral_medium_3, magistral_small, mistral_nemotron, gemma_3n_e4b]
+TIER_4_FALLBACKS = [mistral_nemotron, gemma_3n_e4b]
 
 
 def _build_fallback_chain(primary_module):
