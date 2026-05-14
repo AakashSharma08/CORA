@@ -225,7 +225,7 @@ class NeMoScorer:
                 return_tensors="pt", 
                 add_special_tokens=True, 
                 max_length=512, 
-                padding="max_length", 
+                padding=True, 
                 truncation=True
             )
             input_ids = inputs["input_ids"].to(self._device)

@@ -1,8 +1,8 @@
 """
 llm_providers.mistral_large_3
 ─────────────────────────────
-Tier 4 — Mistral Large 3 (675B)
-Top-tier model for the most complex reasoning, code, and multi-step tasks.
+Tier 3 — Mistral Large 3 (675B)
+High-performance model for complex reasoning, code, and multi-step tasks.
 
 Provider : NVIDIA Integrate API (OpenAI-compatible)
 Model ID : mistralai/mistral-large-3-675b-instruct-2512
@@ -17,7 +17,7 @@ from .base import call_nvidia_openai
 # ── Configuration ────────────────────────────────────────────────────────────
 MODEL_ID = "mistralai/mistral-large-3-675b-instruct-2512"
 DISPLAY_NAME = "Mistral Large 3"
-TIER = "Tier 4"
+TIER = "Tier 3"
 API_KEY_ENV = "NVIDIA_MISTRAL_LARGE_API_KEY"
 
 

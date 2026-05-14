@@ -1,11 +1,11 @@
 """
-llm_providers.gemma_3n_e4b
-──────────────────────────
-Tier 0 — Google Gemma 3n E4B IT
-Lightweight model for simple conversational / factual queries.
+llm_providers.solar_10_7b
+─────────────────────────
+Tier 0 (Fallback) — Upstage Solar 10.7B Instruct
+Lightweight fallback model for simple queries.
 
 Provider : NVIDIA Integrate API (OpenAI-compatible)
-Model ID : google/gemma-3n-e4b-it
+Model ID : upstage/solar-10.7b-instruct
 """
 
 from __future__ import annotations
@@ -15,10 +15,10 @@ import os
 from .base import call_nvidia_openai
 
 # ── Configuration ────────────────────────────────────────────────────────────
-MODEL_ID = "google/gemma-3n-e4b-it"
-DISPLAY_NAME = "Gemma 3n E4B"
+MODEL_ID = "upstage/solar-10.7b-instruct"
+DISPLAY_NAME = "Solar 10.7B"
 TIER = "Tier 0"
-API_KEY_ENV = "NVIDIA_GEMMA_API_KEY"
+API_KEY_ENV = "NVIDIA_SOLAR_API_KEY"
 
 
 def get_api_key() -> str:
@@ -26,7 +26,7 @@ def get_api_key() -> str:
 
 
 async def call(prompt: str, api_key: str | None = None) -> str:
-    """Send a prompt to Gemma 3n E4B and return the response text."""
+    """Send a prompt to Solar 10.7B and return the response text."""
     key = api_key or get_api_key()
     if not key:
         raise Exception(f"No API key configured for {DISPLAY_NAME} ({API_KEY_ENV})")

@@ -64,10 +64,11 @@ async def call_nvidia_openai(
     temperature: float = 0.2,
     top_p: float = 0.7,
     max_tokens: int = 1024,
+    extra_body: Optional[dict] = None,
 ) -> str:
     """
     Call an NVIDIA-hosted model via the OpenAI-compatible chat/completions API.
-    Used by: Gemma 2B, Llama 3.1 8B, Mistral 7B, Mixtral 8x7B.
+    Used by: Gemma 2B, Llama 3.1 8B, Mistral 7B, Mixtral 8x7B, and Reasoning models.
     """
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -81,6 +82,8 @@ async def call_nvidia_openai(
         "max_tokens": max_tokens,
         "stream": False,
     }
+    if extra_body:
+        payload.update(extra_body)
 
     client = _get_client(NVIDIA_CHAT_ENDPOINT)
     r = await client.post(NVIDIA_CHAT_ENDPOINT, json=payload, headers=headers)

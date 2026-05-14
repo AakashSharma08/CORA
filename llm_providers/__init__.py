@@ -12,11 +12,14 @@ This __init__ exports:
   - MODEL_REGISTRY   — ordered list of all registered model modules
 
 Tier Assignments (2026-05 refresh):
-  Tier 0  →  Gemma 3n E4B         (lightest, simple queries)
-  Tier 1  →  Mistral Nemotron     (moderate factual / light analytical)
-  Tier 2  →  Magistral Small 2506 (mid-range analytical / creative)
-  Tier 3  →  Mistral Medium 3     (complex reasoning)
-  Tier 4  →  Mistral Large 3 675B (hardest multi-step / code)
+  Tier 0  →  Nemotron Mini 4B        (lightest, simple queries)
+             Solar 10.7B             (fallback)
+  Tier 1  →  Nemotron Nano Reasoning (moderate factual / logical reasoning)
+  Tier 2  →  Mistral Nemotron        (mid-range analytical / creative)
+             Step 3.5 Flash          (fallback)
+  Tier 3  →  Mistral Large 3 675B    (complex reasoning)
+             MiniMax M2.7            (fallback)
+  Tier 4  →  Qwen3 Coder 480B       (hardest multi-step / code)
 """
 
 from __future__ import annotations
@@ -24,35 +27,47 @@ from __future__ import annotations
 import logging
 from typing import Optional, Tuple
 
-from . import gemma_3n_e4b
-from . import glm_4_7
-from . import glm_5_1
-from . import llama_3_3_super
-from . import kimi_k2
+from . import nemotron_mini_4b
+from . import solar_10_7b
+from . import nemotron_nano_reasoning
+from . import mistral_nemotron
+from . import step_3_5_flash
+from . import mistral_large_3
+from . import minimax_m2_7
+from . import qwen3_coder
 from .base import close_clients
 
 logger = logging.getLogger("cora.llm")
 
 # ── Model Registry (Optimized for Stability) ────────────────────────────────
 MODEL_REGISTRY = [
-    gemma_3n_e4b,       # Tier 0
-    glm_4_7,            # Tier 1
-    glm_5_1,            # Tier 2
-    llama_3_3_super,    # Tier 3
-    kimi_k2,            # Tier 4
+    nemotron_mini_4b,     # Tier 0
+    solar_10_7b,          # Tier 0 fallback
+    nemotron_nano_reasoning,   # Tier 1
+    mistral_nemotron,     # Tier 2
+    step_3_5_flash,       # Tier 2 fallback
+    mistral_large_3,      # Tier 3
+    minimax_m2_7,         # Tier 3 fallback
+    qwen3_coder,          # Tier 4
 ]
 
 # ── Tier → Model Mapping ────────────────────────────────────────────────────
 TIER_MODEL_MAP = {
-    "Tier 0": gemma_3n_e4b,
-    "Tier 1": glm_4_7,
-    "Tier 2": glm_5_1,
-    "Tier 3": llama_3_3_super,
-    "Tier 4": kimi_k2,
+    "Tier 0": nemotron_mini_4b,
+    "Tier 1": nemotron_nano_reasoning,
+    "Tier 2": mistral_nemotron,
+    "Tier 3": mistral_large_3,
+    "Tier 4": qwen3_coder,
 }
 
-# ── Fallback chain (if the assigned tier's model fails) ──────────────────────
-TIER_4_FALLBACKS = [mistral_nemotron, gemma_3n_e4b]
+# ── Fallback chains per tier (if the primary model fails) ────────────────────
+TIER_FALLBACKS = {
+    "Tier 0": [solar_10_7b],
+    "Tier 1": [],
+    "Tier 2": [step_3_5_flash],
+    "Tier 3": [minimax_m2_7],
+    "Tier 4": [],
+}
 
 
 def _build_fallback_chain(primary_module):
@@ -67,21 +82,19 @@ async def call_llm(
 ) -> Tuple[str, str]:
     """
     Route a prompt to the correct model based on tier assignment.
-    Falls back to other models on failure.
+    Falls back to tier-specific fallbacks first, then general fallback chain.
 
     Returns:
         (response_text, display_model_name)
     """
     primary = TIER_MODEL_MAP.get(tier)
     if not primary:
-        primary = gemma_3n_e4b  # ultimate fallback
+        primary = nemotron_mini_4b  # ultimate fallback
 
-    # Build attempt order: primary first, then Tier 4 fallbacks for T4,
-    # or general fallback chain for other tiers
-    if tier == "Tier 4":
-        attempt_order = [primary] + TIER_4_FALLBACKS
-    else:
-        attempt_order = [primary] + _build_fallback_chain(primary)
+    # Build attempt order: primary first, then tier-specific fallbacks,
+    # then general fallback chain for robustness
+    tier_fallbacks = TIER_FALLBACKS.get(tier, [])
+    attempt_order = [primary] + tier_fallbacks + _build_fallback_chain(primary)
 
     # Deduplicate while preserving order
     seen = set()
@@ -101,7 +114,7 @@ async def call_llm(
 
             logger.info(f"Calling {model_module.DISPLAY_NAME} ({model_module.MODEL_ID})")
             text = await model_module.call(prompt, key)
-            return text, model_module.DISPLAY_NAME
+            return str(text or ""), model_module.DISPLAY_NAME
 
         except Exception as e:
             logger.error(f"LLM error ({model_module.DISPLAY_NAME}): {e}")
@@ -115,5 +128,5 @@ async def call_llm(
 # ── Convenience: get display info for a tier ─────────────────────────────────
 def get_tier_model_info(tier: str) -> Tuple[str, str]:
     """Return (model_id, display_name) for the primary model of a tier."""
-    module = TIER_MODEL_MAP.get(tier, gemma_3n_e4b)
+    module = TIER_MODEL_MAP.get(tier, nemotron_mini_4b)
     return module.MODEL_ID, module.DISPLAY_NAME

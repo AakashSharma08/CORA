@@ -4,8 +4,8 @@ llm_providers.prompt_optimizer
 Dedicated model for Prompt Optimization: Mistral Large 3 675B
 Provider : NVIDIA Integrate API
 
-Uses Mistral Large 3 as the optimizer engine (Devstral 2 123B is
-currently DEGRADED on NVIDIA).
+Uses Mistral Large 3 as the optimizer engine — strong reasoning
+capabilities without the high latency of Tier 4 models.
 
 OPTIMISED: Persistent client, reduced max_tokens, tighter timeout.
 """
@@ -18,8 +18,8 @@ from openai import AsyncOpenAI
 
 logger = logging.getLogger("cora.llm.optimizer")
 
-MODEL_ID = "mistralai/mistral-large-3-675b-instruct-2512"
-API_KEY_ENV = "NVIDIA_MISTRAL_LARGE_API_KEY"
+MODEL_ID = "mistralai/mistral-nemotron"
+API_KEY_ENV = "NVIDIA_PROMPT_OPTIMIZER_API_KEY"
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 
 # ── Persistent client ────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ def _get_client(key: str) -> AsyncOpenAI:
         _client = AsyncOpenAI(
             base_url=NVIDIA_BASE_URL,
             api_key=key,
-            timeout=30.0,
+            timeout=60.0,
             max_retries=0,
         )
     return _client

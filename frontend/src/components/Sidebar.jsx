@@ -17,11 +17,14 @@ const TIER_MAP = {
 }
 
 const MODEL_MAP = {
-  'Gemma 2B': 'Edge',
-  'Llama 3.1 8B': 'Logical',
-  'Mistral 7B v3': 'Analytical',
-  'Mixtral 8x7B': 'Synthesis',
-  'Devstral 123B (NVIDIA)': 'Deep'
+  'Nemotron Mini 4B': 'Edge',
+  'Solar 10.7B': 'Edge',
+  'Nemotron Nano 30B Reasoning': 'Logical',
+  'Mistral Nemotron': 'Analytical',
+  'Step 3.5 Flash': 'Analytical',
+  'Mistral Large 3': 'Reasoning',
+  'MiniMax M2.7': 'Reasoning',
+  'Qwen3 Coder 480B': 'Deep'
 }
 
 const Sidebar = forwardRef(({ onSelect }, ref) => {

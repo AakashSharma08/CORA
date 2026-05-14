@@ -48,11 +48,14 @@ function parseMetric(value = '') {
 }
 
 const MODEL_MAP = {
-  'Mistral 7B v3': 'Core Analytical Unit',
-  'Mixtral 8x7B': 'Parallel Logic Core',
-  'Devstral 123B (NVIDIA)': 'Deep Reasoning Nexus',
-  'Gemma 2B': 'Edge Processing Unit',
-  'Llama 3.1 8B': 'General Purpose Engine'
+  'Nemotron Mini 4B': 'Edge Processing Unit',
+  'Solar 10.7B': 'Edge Fallback Unit',
+  'Nemotron Nano 30B Reasoning': 'Logical Reasoning Core',
+  'Mistral Nemotron': 'Core Analytical Unit',
+  'Step 3.5 Flash': 'Analytical Fallback Unit',
+  'Mistral Large 3': 'Deep Reasoning Engine',
+  'MiniMax M2.7': 'Reasoning Fallback Engine',
+  'Qwen3 Coder 480B': 'Frontier Code Nexus'
 }
 
 function parseRoutingReason(reason = '') {

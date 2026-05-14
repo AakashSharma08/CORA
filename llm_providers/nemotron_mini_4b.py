@@ -1,14 +1,11 @@
 """
-llm_providers.mistral_medium_3
+llm_providers.nemotron_mini_4b
 ──────────────────────────────
-Tier 3 — Mistral Large 3 675B (as Tier 3)
-
-NOTE: mistral-medium-3-instruct is currently unavailable on NVIDIA's API
-catalog (returns 404). Using Mistral Large 3 for Tier 3 as a working
-substitute with slightly conservative generation parameters.
+Tier 0 — NVIDIA Nemotron Mini 4B Instruct
+Lightweight model for simple conversational / factual queries.
 
 Provider : NVIDIA Integrate API (OpenAI-compatible)
-Model ID : mistralai/mistral-large-3-675b-instruct-2512
+Model ID : nvidia/nemotron-mini-4b-instruct
 """
 
 from __future__ import annotations
@@ -18,10 +15,10 @@ import os
 from .base import call_nvidia_openai
 
 # ── Configuration ────────────────────────────────────────────────────────────
-MODEL_ID = "mistralai/mistral-medium-3-instruct"
-DISPLAY_NAME = "Mistral Medium 3"
-TIER = "Tier 3"
-API_KEY_ENV = "NVIDIA_MISTRAL_MEDIUM_API_KEY"
+MODEL_ID = "nvidia/nemotron-mini-4b-instruct"
+DISPLAY_NAME = "Nemotron Mini 4B"
+TIER = "Tier 0"
+API_KEY_ENV = "NVIDIA_NEMOTRON_MINI_API_KEY"
 
 
 def get_api_key() -> str:
@@ -29,7 +26,7 @@ def get_api_key() -> str:
 
 
 async def call(prompt: str, api_key: str | None = None) -> str:
-    """Send a prompt to Tier 3 model and return the response text."""
+    """Send a prompt to Nemotron Mini 4B and return the response text."""
     key = api_key or get_api_key()
     if not key:
         raise Exception(f"No API key configured for {DISPLAY_NAME} ({API_KEY_ENV})")
@@ -37,7 +34,7 @@ async def call(prompt: str, api_key: str | None = None) -> str:
         model=MODEL_ID,
         prompt=prompt,
         api_key=key,
-        temperature=0.4,
-        top_p=0.9,
+        temperature=0.2,
+        top_p=0.7,
         max_tokens=1024,
     )

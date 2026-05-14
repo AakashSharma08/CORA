@@ -1,8 +1,8 @@
 """
 llm_providers.mistral_nemotron
 ──────────────────────────────
-Tier 1 — Mistral Nemotron
-Mid-light model for moderate factual and light analytical queries.
+Tier 2 — Mistral Nemotron
+Mid-range model for moderate analytical and light creative queries.
 Optimized for agentic workflows, coding, and instruction following.
 
 Provider : NVIDIA Integrate API (OpenAI-compatible)
@@ -18,7 +18,7 @@ from .base import call_nvidia_openai
 # ── Configuration ────────────────────────────────────────────────────────────
 MODEL_ID = "mistralai/mistral-nemotron"
 DISPLAY_NAME = "Mistral Nemotron"
-TIER = "Tier 1"
+TIER = "Tier 2"
 API_KEY_ENV = "NVIDIA_NEMOTRON_API_KEY"
 
 

@@ -4,7 +4,7 @@ CORA Calibration Judge
 Sends each prompt to its assigned tier AND one tier lower,
 scores both responses using Mistral Large as judge (0/1/2),
 computes under-routing rate and accuracy metrics.
-Judge model: mistralai/mistral-large-3-675b-instruct-2512 (free via NVIDIA NIM)
+Judge model: mistralai/mistral-nemotron (via NVIDIA NIM)
 """
 
 import json
@@ -22,20 +22,20 @@ load_dotenv()
 
 # Per-model API keys matching .env configuration
 TIER_KEYS = {
-    "Tier 0": os.getenv("NVIDIA_GEMMA_API_KEY"),
-    "Tier 1": os.getenv("NVIDIA_NEMOTRON_API_KEY"),
-    "Tier 2": os.getenv("NVIDIA_MAGISTRAL_API_KEY"),
-    "Tier 3": os.getenv("NVIDIA_MISTRAL_MEDIUM_API_KEY"),
-    "Tier 4": os.getenv("NVIDIA_MISTRAL_LARGE_API_KEY"),
+    "Tier 0": os.getenv("NVIDIA_NEMOTRON_MINI_API_KEY"),
+    "Tier 1": os.getenv("NVIDIA_NEMOTRON_NANO_API_KEY"),
+    "Tier 2": os.getenv("NVIDIA_NEMOTRON_API_KEY"),
+    "Tier 3": os.getenv("NVIDIA_MISTRAL_LARGE_API_KEY"),
+    "Tier 4": os.getenv("NVIDIA_QWEN3_CODER_API_KEY"),
 }
 JUDGE_KEY = os.getenv("NVIDIA_NEMOTRON_API_KEY")
 
 TIER_MODELS = {
-    "Tier 0": "google/gemma-3n-e4b-it",
-    "Tier 1": "mistralai/mistral-nemotron",
-    "Tier 2": "mistralai/magistral-small-2506",
-    "Tier 3": "mistralai/mistral-medium-3-instruct",
-    "Tier 4": "mistralai/mistral-large-3-675b-instruct-2512",
+    "Tier 0": "nvidia/nemotron-mini-4b-instruct",
+    "Tier 1": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+    "Tier 2": "mistralai/mistral-nemotron",
+    "Tier 3": "mistralai/mistral-large-3-675b-instruct-2512",
+    "Tier 4": "qwen/qwen3-coder-480b-a35b-instruct",
 }
 
 JUDGE_MODEL = "mistralai/mistral-nemotron"

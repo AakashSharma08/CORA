@@ -17,19 +17,22 @@ load_dotenv()
 
 TIER_CONFIG = {
     "Tier 0": [
-        {"model": "google/gemma-3n-e4b-it", "key": os.getenv("NVIDIA_GEMMA_API_KEY")},
+        {"model": "nvidia/nemotron-mini-4b-instruct", "key": os.getenv("NVIDIA_NEMOTRON_MINI_API_KEY")},
+        {"model": "upstage/solar-10.7b-instruct", "key": os.getenv("NVIDIA_SOLAR_API_KEY")},
     ],
     "Tier 1": [
-        {"model": "mistralai/mistral-nemotron", "key": os.getenv("NVIDIA_NEMOTRON_API_KEY")},
+        {"model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", "key": os.getenv("NVIDIA_NEMOTRON_NANO_API_KEY")},
     ],
     "Tier 2": [
         {"model": "mistralai/mistral-nemotron", "key": os.getenv("NVIDIA_NEMOTRON_API_KEY")},
+        {"model": "stepfun-ai/step-3.5-flash", "key": os.getenv("NVIDIA_STEP_FLASH_API_KEY")},
     ],
     "Tier 3": [
-        {"model": "nvidia/llama-3.3-nemotron-super-49b-v1", "key": os.getenv("NVIDIA_LLAMA_SUPER_API_KEY")},
+        {"model": "mistralai/mistral-large-3-675b-instruct-2512", "key": os.getenv("NVIDIA_MISTRAL_LARGE_API_KEY")},
+        {"model": "minimaxai/minimax-m2.7", "key": os.getenv("NVIDIA_MINIMAX_API_KEY")},
     ],
     "Tier 4": [
-        {"model": "nvidia/llama-3.3-nemotron-super-49b-v1", "key": os.getenv("NVIDIA_LLAMA_SUPER_API_KEY")},
+        {"model": "qwen/qwen3-coder-480b-a35b-instruct", "key": os.getenv("NVIDIA_QWEN3_CODER_API_KEY")},
     ],
 }
 

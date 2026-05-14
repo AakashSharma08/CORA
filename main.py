@@ -563,18 +563,34 @@ async def handle_query_stream(
         start = time.time()
         full_response = ""
         try:
-            # We use call_llm even for streaming meta-data, but since we don't have
-            # a real stream=True implementation for every provider yet, we simulate
-            # the streaming experience by chunking the final response.
+            from llm_providers import TIER_MODEL_MAP, _build_fallback_chain, TIER_FALLBACKS
+            import llm_providers.nemotron_mini_4b as nemotron_mini_4b
+
+            primary = TIER_MODEL_MAP.get(tier)
+            if not primary:
+                primary = nemotron_mini_4b
+
+            key = user_key or primary.get_api_key()
+            if not key:
+                yield f"event: error\ndata: {{\"error\": \"No API key configured\"}}\n\n"
+                return
+
+            # For streaming, call the LLM and yield chunks
             response_text, display_model = await call_llm(tier, req.prompt, user_key)
             
+            # Ensure response_text is a string
+            response_text = str(response_text or "")
+
             # Send response in chunks for streaming feel
             chunk_size = 32  # slightly larger chunks for better throughput
-            for i in range(0, len(response_text), chunk_size):
-                chunk = response_text[i:i + chunk_size]
-                full_response += chunk
-                yield f"event: token\ndata: {json.dumps({'text': chunk})}\n\n"
-                await asyncio.sleep(0.01) # tiny sleep to ensure smooth UI updates
+            if not response_text:
+                yield f"event: token\ndata: {json.dumps({'text': '[No response from model]'})}\n\n"
+            else:
+                for i in range(0, len(response_text), chunk_size):
+                    chunk = response_text[i:i + chunk_size]
+                    full_response += chunk
+                    yield f"event: token\ndata: {json.dumps({'text': chunk})}\n\n"
+                    await asyncio.sleep(0.01)
 
             latency_ms = round((time.time() - start) * 1000, 2)
             prompt_words = len(req.prompt.split())
